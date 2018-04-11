@@ -9,6 +9,10 @@
 import SnapKit
 import UIKit
 
+protocol AddButtonDelegate {
+    func addButtonPressed(withName name: String)
+}
+
 class ModalPopViewController: UIViewController {
     
     var companyNameLabel: UILabel!
@@ -19,6 +23,8 @@ class ModalPopViewController: UIViewController {
     
     var addButton: UIButton!
     var cancelButton: UIButton!
+    
+    var delegate: AddButtonDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,7 +87,10 @@ class ModalPopViewController: UIViewController {
     }
     
     @objc func addButtonPressed() {
-        
+        view.backgroundColor = .yellow
+        if let name = companyName.text {
+            delegate?.addButtonPressed(withName: name)
+        }
     }
     
     @objc func cancelButtonPressed(sender: UIButton) {

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddButtonDelegate {
     
     let firstItem = Item(title: "ecaft work", isCompleted: false)
     let secondItem = Item(title: "laundry", isCompleted: false)
@@ -39,7 +39,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //add navigation bar + button
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "+", style: .plain, target: self, action: #selector(addButtonPressed))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "+", style: .plain, target: self, action: #selector(plusButtonPressed))
     }
     
     func setupConstraints() {
@@ -48,10 +48,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    @objc func addButtonPressed() {
-        present(ModalPopViewController(), animated: true, completion: nil)
+    @objc func plusButtonPressed() {
+        let mpVC = ModalPopViewController()
+        mpVC.delegate = self
+        present(mpVC, animated: true, completion: nil)
     }
     
+    func addButtonPressed(withName name: String) {
+        let newItem = Item(title: name, isCompleted: false)
+        items.append(newItem)
+        tableView.reloadData()
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
@@ -78,8 +85,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         print(items[indexPath.row].title)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
     
+    //delete by swipe stuff
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
+            items.remove(at: indexPath.row)
+            tableView.reloadData()
+        }
+    }
     
 }
 
